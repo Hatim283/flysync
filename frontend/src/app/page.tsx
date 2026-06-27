@@ -1,18 +1,36 @@
 "use client";
 
 import { useState } from "react";
-import { PlaneTakeoff, Hotel, CalendarDays, Coins, BrainCircuit, Loader2, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { PlaneTakeoff, Hotel, CalendarDays, Coins, BrainCircuit, Loader2, ArrowRight, MapPin, CheckCircle2, ShieldAlert, Sparkles, Leaf, Briefcase, Filter, Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
+  const [agentStep, setAgentStep] = useState(0); 
   const [result, setResult] = useState<any>(null);
+
+  const simulateAgentSequence = async () => {
+    // 1. Scout
+    setAgentStep(1);
+    await new Promise((r) => setTimeout(r, 2000));
+    // 2. Sync
+    setAgentStep(2);
+    await new Promise((r) => setTimeout(r, 2000));
+    // 3. Sentinel
+    setAgentStep(3);
+    await new Promise((r) => setTimeout(r, 2500));
+    setAgentStep(4);
+  };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
+    setAgentStep(0);
 
+    // Run UI simulation concurrently with fetch
+    const simulationPromise = simulateAgentSequence();
+    
     try {
       const response = await fetch("/api/search", {
         method: "POST",
@@ -31,188 +49,296 @@ export default function Home() {
         }),
       });
       const data = await response.json();
+      
+      // Ensure simulation finishes before showing results
+      await simulationPromise;
       setResult(data);
     } catch (err) {
       console.error(err);
+      await simulationPromise;
     } finally {
       setLoading(false);
+      setAgentStep(0);
     }
   };
 
   return (
-    <main className="min-h-screen hero-gradient font-sans selection:bg-primary/30 text-slate-100">
-      {/* Header */}
-      <header className="fixed top-0 w-full z-50 glass-panel border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <PlaneTakeoff className="text-primary w-8 h-8" />
-            <h1 className="text-2xl font-bold tracking-tight">FlySync<span className="text-success">Hub</span></h1>
+    <main className="min-h-screen bg-[#F1F5F9] font-sans selection:bg-blue-500/30 text-slate-800">
+      {/* Navbar */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-blue-600">
+            <PlaneTakeoff className="w-7 h-7" />
+            <h1 className="text-2xl font-black tracking-tight">FlySync<span className="text-slate-800">Hub</span></h1>
           </div>
-          <nav className="hidden md:flex gap-8 text-sm font-medium text-slate-300">
-            <a href="#" className="hover:text-white transition-colors">Flights</a>
-            <a href="#" className="hover:text-white transition-colors">Hotels</a>
-            <a href="#" className="hover:text-white transition-colors flex items-center gap-1"><Coins className="w-4 h-4 text-warning"/> Rewards</a>
+          <nav className="hidden md:flex gap-8 text-sm font-semibold text-slate-600">
+            <a href="#" className="hover:text-blue-600 transition-colors border-b-2 border-blue-600 pb-5 translate-y-[10px]">Flights & Hotels</a>
+            <a href="#" className="hover:text-blue-600 transition-colors flex items-center gap-1"><Coins className="w-4 h-4 text-amber-500"/> Rewards</a>
           </nav>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-400">flyGold Member</span>
-            <button className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-sm font-semibold transition-all">Sign In</button>
+            <span className="text-sm font-medium text-amber-600 bg-amber-50 px-3 py-1 rounded-full">flyGold Member</span>
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">HM</div>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6">
-              <BrainCircuit className="w-4 h-4" /> Agentic AI Concierge
-            </span>
-            <h2 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
-              Where do you want to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">sync</span> to next?
-            </h2>
-            <p className="text-lg text-slate-400">
-              Our Multi-Agent AI scouts the best flights, negotiates hotels, checks your calendar, and maximizes your loyalty rewards—all in real-time.
-            </p>
-          </motion.div>
-        </div>
-
-        {/* Search Widget */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-          className="glass-panel rounded-3xl p-6 md:p-8 shadow-2xl max-w-5xl mx-auto"
-        >
-          <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-3 flex items-center gap-3">
-              <PlaneTakeoff className="text-slate-400 w-5 h-5 ml-2" />
-              <div>
-                <label className="text-xs text-slate-400 uppercase tracking-wider font-bold">From</label>
-                <input type="text" defaultValue="DXB (Dubai)" className="w-full bg-transparent border-none outline-none text-white font-semibold" />
-              </div>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-3 flex items-center gap-3">
-              <PlaneTakeoff className="text-slate-400 w-5 h-5 ml-2" />
-              <div>
-                <label className="text-xs text-slate-400 uppercase tracking-wider font-bold">To</label>
-                <input type="text" defaultValue="LHR (London)" className="w-full bg-transparent border-none outline-none text-white font-semibold" />
-              </div>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-3 flex items-center gap-3">
-              <CalendarDays className="text-slate-400 w-5 h-5 ml-2" />
-              <div>
-                <label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Date</label>
-                <input type="date" defaultValue="2026-07-05" className="w-full bg-transparent border-none outline-none text-white font-semibold [color-scheme:dark]" />
-              </div>
-            </div>
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="bg-primary hover:bg-blue-600 text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><BrainCircuit className="w-5 h-5" /> Unleash Agents</>}
-            </button>
-          </form>
-        </motion.div>
-      </div>
-
-      {/* Results Section */}
-      {result && (
-        <div className="max-w-7xl mx-auto px-6 pb-32">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Hero Search Section */}
+      {!result && (
+        <div className="bg-gradient-to-b from-blue-900 to-blue-800 pb-32 pt-20 px-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
+          <div className="max-w-5xl mx-auto relative z-10">
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">Discover the world with AI.</h2>
+            <p className="text-blue-200 text-lg mb-10">Let FlySync's agentic concierge orchestrate your perfect itinerary.</p>
             
-            {/* Left Col: Main Results */}
-            <div className="lg:col-span-2 space-y-6">
-              <h3 className="text-2xl font-bold flex items-center gap-2">
-                <PlaneTakeoff className="w-6 h-6 text-primary" /> Curated Flight
-              </h3>
-              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="glass-panel rounded-2xl p-6 border-l-4 border-l-primary">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h4 className="text-xl font-bold">{result.selected_flight.airline}</h4>
-                    <p className="text-sm text-slate-400">Flight {result.selected_flight.flight_number}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-success">${result.selected_flight.price_home}</p>
-                    <p className="text-xs text-slate-400">Total Price</p>
-                  </div>
+            {/* Search Widget */}
+            <div className="bg-white p-3 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2">
+              <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3 hover:border-blue-400 transition-colors">
+                <PlaneTakeoff className="text-slate-400 w-5 h-5 ml-2" />
+                <div className="flex-1">
+                  <label className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Origin</label>
+                  <input type="text" defaultValue="DXB (Dubai)" className="w-full bg-transparent border-none outline-none text-slate-900 font-bold" />
                 </div>
-                <div className="flex items-center justify-between text-center pt-4 border-t border-white/10">
-                  <div>
-                    <p className="text-xl font-bold">{result.selected_flight.departure_time.split('T')[1]}</p>
-                    <p className="text-sm text-slate-400">{result.selected_flight.origin}</p>
-                  </div>
-                  <div className="flex-1 px-8 relative">
-                    <div className="h-[2px] bg-white/20 w-full absolute top-1/2 -translate-y-1/2"></div>
-                    <PlaneTakeoff className="w-4 h-4 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-slate-400 bg-background px-1" />
-                  </div>
-                  <div>
-                    <p className="text-xl font-bold">{result.selected_flight.arrival_time.split('T')[1]}</p>
-                    <p className="text-sm text-slate-400">{result.selected_flight.destination}</p>
-                  </div>
+              </div>
+              <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3 hover:border-blue-400 transition-colors">
+                <MapPin className="text-slate-400 w-5 h-5 ml-2" />
+                <div className="flex-1">
+                  <label className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Destination</label>
+                  <input type="text" defaultValue="LHR (London)" className="w-full bg-transparent border-none outline-none text-slate-900 font-bold" />
                 </div>
-              </motion.div>
+              </div>
+              <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3 hover:border-blue-400 transition-colors">
+                <CalendarDays className="text-slate-400 w-5 h-5 ml-2" />
+                <div className="flex-1">
+                  <label className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Travel Date</label>
+                  <input type="date" defaultValue="2026-07-05" className="w-full bg-transparent border-none outline-none text-slate-900 font-bold" />
+                </div>
+              </div>
+              <button 
+                onClick={handleSearch}
+                disabled={loading}
+                className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold px-8 flex items-center justify-center gap-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed md:w-auto w-full py-4 md:py-0"
+              >
+                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <><Search className="w-5 h-5" /> Search</>}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-              <h3 className="text-2xl font-bold flex items-center gap-2 mt-12">
-                <Hotel className="w-6 h-6 text-success" /> Selected Accommodation
-              </h3>
-              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="glass-panel rounded-2xl p-6 border-l-4 border-l-success">
-                <div className="flex justify-between items-start mb-4">
+      {/* Agentic Visibility Overlay */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4"
+          >
+            <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full">
+              <div className="flex justify-center mb-6">
+                <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center animate-pulse">
+                  <BrainCircuit className="w-8 h-8" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-center text-slate-800 mb-8">AI Concierge Working...</h3>
+              
+              <div className="space-y-6">
+                {/* Scout Step */}
+                <div className="flex items-center gap-4">
+                  {agentStep >= 1 ? <CheckCircle2 className={`w-6 h-6 ${agentStep > 1 ? 'text-green-500' : 'text-blue-500 animate-pulse'}`} /> : <div className="w-6 h-6 rounded-full border-2 border-slate-200" />}
                   <div>
-                    <h4 className="text-xl font-bold">{result.selected_hotel.hotel_name}</h4>
-                    <p className="text-sm text-slate-400">{result.selected_hotel.rating} ★ Rating</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-success">${result.selected_hotel.price_home}</p>
-                    <p className="text-xs text-slate-400">Per Night</p>
+                    <p className={`font-bold ${agentStep >= 1 ? 'text-slate-800' : 'text-slate-400'}`}>Scout Agent</p>
+                    <p className="text-sm text-slate-500">{agentStep > 1 ? 'Found optimal flights & hotels' : agentStep === 1 ? 'Searching global inventory...' : 'Waiting...'}</p>
                   </div>
                 </div>
-                <div className="flex gap-2 flex-wrap mt-4">
-                  {result.selected_hotel.amenities.map((a: string, i: number) => (
-                    <span key={i} className="bg-white/10 px-3 py-1 rounded-full text-xs">{a}</span>
-                  ))}
+                {/* Sync Step */}
+                <div className="flex items-center gap-4">
+                  {agentStep >= 2 ? <CheckCircle2 className={`w-6 h-6 ${agentStep > 2 ? 'text-green-500' : 'text-blue-500 animate-pulse'}`} /> : <div className="w-6 h-6 rounded-full border-2 border-slate-200" />}
+                  <div>
+                    <p className={`font-bold ${agentStep >= 2 ? 'text-slate-800' : 'text-slate-400'}`}>Sync Coordinator</p>
+                    <p className="text-sm text-slate-500">{agentStep > 2 ? 'Calendar conflicts cleared' : agentStep === 2 ? 'Checking your schedule...' : 'Waiting...'}</p>
+                  </div>
                 </div>
-              </motion.div>
+                {/* Sentinel Step */}
+                <div className="flex items-center gap-4">
+                  {agentStep >= 3 ? <CheckCircle2 className={`w-6 h-6 ${agentStep > 3 ? 'text-green-500' : 'text-blue-500 animate-pulse'}`} /> : <div className="w-6 h-6 rounded-full border-2 border-slate-200" />}
+                  <div>
+                    <p className={`font-bold ${agentStep >= 3 ? 'text-slate-800' : 'text-slate-400'}`}>Sentinel Agent</p>
+                    <p className="text-sm text-slate-500">{agentStep > 3 ? 'Rewards & pricing analyzed' : agentStep === 3 ? 'Evaluating dynamic pricing...' : 'Waiting...'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Results UI */}
+      {result && !loading && (
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          {/* Top Info Bar */}
+          <div className="flex flex-wrap items-center justify-between bg-white rounded-xl p-4 shadow-sm border border-slate-200 mb-8">
+            <div className="flex items-center gap-4">
+              <div className="bg-blue-50 p-2 rounded-lg"><PlaneTakeoff className="text-blue-600 w-5 h-5"/></div>
+              <div>
+                <p className="font-bold text-slate-800">{result.selected_flight?.origin} to {result.selected_flight?.destination}</p>
+                <p className="text-xs text-slate-500">1 Adult • Economy • {result.selected_flight?.departure_time.split('T')[0]}</p>
+              </div>
+            </div>
+            <button onClick={() => setResult(null)} className="text-sm font-semibold text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg transition-colors">Change Search</button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Left Sidebar Filters */}
+            <div className="hidden lg:block space-y-6">
+              <div className="flex items-center gap-2 font-bold text-slate-800 pb-2 border-b border-slate-200">
+                <Filter className="w-4 h-4"/> Filters
+              </div>
+              <div>
+                <p className="font-semibold text-slate-800 mb-3 text-sm">Stops</p>
+                <label className="flex items-center gap-2 text-sm text-slate-600 mb-2 cursor-pointer"><input type="checkbox" defaultChecked className="rounded text-blue-600" /> Direct only</label>
+                <label className="flex items-center gap-2 text-sm text-slate-600 mb-2 cursor-pointer"><input type="checkbox" className="rounded text-blue-600" /> 1 stop</label>
+              </div>
+              <div className="pt-4 border-t border-slate-200">
+                <p className="font-semibold text-slate-800 mb-3 text-sm">Price Range</p>
+                <input type="range" className="w-full accent-blue-600" min="0" max="5000" defaultValue="3500"/>
+                <div className="flex justify-between text-xs text-slate-500 mt-1"><span>$0</span><span>$3,500</span></div>
+              </div>
+              
+              {/* Agent Insights Box */}
+              <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-4 border border-blue-100 mt-8">
+                <div className="flex items-center gap-2 text-blue-800 font-bold mb-3">
+                  <Sparkles className="w-4 h-4 text-blue-600"/> Agent Insights
+                </div>
+                {result.calendar_conflicts.length > 0 ? (
+                  <div className="bg-amber-100 text-amber-800 p-3 rounded-lg text-xs font-medium mb-3 flex items-start gap-2">
+                    <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5"/>
+                    <p>{result.calendar_conflicts[0]}</p>
+                  </div>
+                ) : (
+                  <div className="bg-green-100 text-green-800 p-3 rounded-lg text-xs font-medium mb-3">
+                    No calendar conflicts detected for these dates.
+                  </div>
+                )}
+                <div className="text-xs text-slate-700 font-medium">
+                  <p className="mb-1"><strong>Price Trend:</strong> {result.price_analysis?.price_status}</p>
+                  <p className="text-blue-700 font-bold">{result.price_analysis?.buying_verdict}</p>
+                </div>
+              </div>
             </div>
 
-            {/* Right Col: Agent Reasoning Visualization */}
-            <div className="lg:col-span-1 space-y-6">
-              <div className="glass-panel rounded-2xl p-6 sticky top-28 bg-blue-900/10 border-blue-500/20">
-                <h3 className="text-lg font-bold flex items-center gap-2 mb-4 text-blue-400">
-                  <BrainCircuit className="w-5 h-5" /> Agent Execution Trace
-                </h3>
-                <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-                  {result.execution_trace.map((trace: string, idx: number) => (
-                    <motion.div 
-                      key={idx} 
-                      initial={{ opacity: 0, y: 10 }} 
-                      animate={{ opacity: 1, y: 0 }} 
-                      transition={{ delay: idx * 0.1 }}
-                      className="text-sm border-l-2 border-white/10 pl-3 py-1"
-                    >
-                      {trace.includes("CRITICAL") ? (
-                        <span className="text-red-400 font-semibold">{trace}</span>
-                      ) : trace.includes("ALERT") ? (
-                        <span className="text-warning font-semibold">{trace}</span>
-                      ) : trace.includes("Agent") ? (
-                        <span className="text-slate-300"><span className="text-primary font-bold">{trace.split(']')[0]}]</span>{trace.split(']')[1]}</span>
-                      ) : (
-                        <span className="text-slate-400 font-mono text-xs">{trace}</span>
-                      )}
-                    </motion.div>
-                  ))}
+            {/* Main Content: Flight & Hotel Cards */}
+            <div className="lg:col-span-3 space-y-6">
+              
+              {/* Flight Card */}
+              <h3 className="text-xl font-black text-slate-800 mb-4">Recommended Flight</h3>
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 hover:border-blue-300 transition-colors overflow-hidden group">
+                <div className="bg-slate-50 px-6 py-3 border-b border-slate-200 flex justify-between items-center">
+                  <div className="flex gap-2">
+                    <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">Best Value</span>
+                    {result.selected_flight?.is_refundable && <span className="bg-slate-200 text-slate-700 text-xs font-bold px-2 py-1 rounded">Refundable</span>}
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-green-700 font-medium">
+                    <Leaf className="w-3 h-3"/> {result.selected_flight?.carbon_emission_kg} kg CO2e
+                  </div>
                 </div>
                 
-                <div className="mt-6 pt-4 border-t border-white/10">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-slate-400">Points Earned:</span>
-                    <span className="font-bold text-warning flex items-center gap-1"><Coins className="w-4 h-4"/> +{result.loyalty_details?.points_accrued || 0}</span>
+                <div className="p-6 flex flex-col md:flex-row md:items-center gap-6">
+                  {/* Airline Logo */}
+                  <div className="w-16 shrink-0">
+                    <img src={result.selected_flight?.logo_url} alt={result.selected_flight?.airline} className="w-full object-contain max-h-12" />
                   </div>
-                  <button className="w-full mt-4 bg-white text-black hover:bg-slate-200 py-3 rounded-xl font-bold flex justify-center items-center gap-2 transition-all">
-                    Confirm Booking <ArrowRight className="w-4 h-4" />
-                  </button>
+                  
+                  {/* Flight Times & Timeline */}
+                  <div className="flex-1 flex items-center justify-between md:px-8">
+                    <div className="text-center">
+                      <p className="text-2xl font-black text-slate-800">{result.selected_flight?.departure_time.split('T')[1].slice(0, 5)}</p>
+                      <p className="text-sm font-bold text-slate-500">{result.selected_flight?.origin}</p>
+                    </div>
+                    
+                    <div className="flex-1 px-4 relative flex flex-col items-center">
+                      <p className="text-xs font-medium text-slate-500 mb-1">{result.selected_flight?.duration}</p>
+                      <div className="w-full h-[2px] bg-slate-300 relative">
+                        <div className="absolute w-2 h-2 rounded-full bg-slate-400 -left-1 -top-[3px]"></div>
+                        <div className="absolute w-2 h-2 rounded-full bg-slate-400 -right-1 -top-[3px]"></div>
+                      </div>
+                      <p className="text-[10px] font-bold text-blue-600 mt-1 uppercase">{result.selected_flight?.stops === 0 ? "Direct" : `${result.selected_flight?.stops} Stop`}</p>
+                    </div>
+
+                    <div className="text-center">
+                      <p className="text-2xl font-black text-slate-800">{result.selected_flight?.arrival_time.split('T')[1].slice(0, 5)}</p>
+                      <p className="text-sm font-bold text-slate-500">{result.selected_flight?.destination}</p>
+                    </div>
+                  </div>
+
+                  {/* Price & Action */}
+                  <div className="md:border-l md:border-slate-200 md:pl-6 text-right md:w-48">
+                    <div className="flex items-center justify-end gap-1 mb-1 text-slate-500">
+                      <Briefcase className="w-4 h-4" /> <span className="text-xs font-medium">{result.selected_flight?.baggage}</span>
+                    </div>
+                    <p className="text-3xl font-black text-slate-800">${result.selected_flight?.price_home}</p>
+                    <p className="text-xs font-medium text-slate-500 mb-3">Total price</p>
+                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold transition-colors">Select</button>
+                  </div>
                 </div>
               </div>
-            </div>
 
+              {/* Hotel Card */}
+              <h3 className="text-xl font-black text-slate-800 mt-10 mb-4">AI Recommended Stay</h3>
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 hover:border-blue-300 transition-colors overflow-hidden flex flex-col md:flex-row group">
+                {/* Hotel Image */}
+                <div className="md:w-72 h-56 md:h-auto relative">
+                  <img src={result.selected_hotel?.image_url} alt="Hotel" className="w-full h-full object-cover" />
+                  {result.selected_hotel?.is_ai_recommended && (
+                    <div className="absolute top-3 left-3 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded shadow-md flex items-center gap-1">
+                      <Sparkles className="w-3 h-3"/> AI Pick
+                    </div>
+                  )}
+                </div>
+                
+                {/* Hotel Details */}
+                <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="text-xl font-bold text-slate-800 hover:text-blue-600 cursor-pointer">{result.selected_hotel?.hotel_name}</h4>
+                        <div className="flex items-center gap-2 mt-1 mb-3">
+                          <span className="bg-blue-600 text-white text-xs font-bold px-1.5 py-0.5 rounded">{result.selected_hotel?.rating}</span>
+                          <span className="text-sm font-semibold text-blue-600 cursor-pointer flex items-center gap-1"><MapPin className="w-3 h-3"/> Show on Map</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-black text-slate-800">${result.selected_hotel?.price_home}</p>
+                        <p className="text-xs font-medium text-slate-500">Per night, taxes inc.</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {result.selected_hotel?.amenities.map((a: string, i: number) => (
+                        <span key={i} className={`text-xs font-bold px-2 py-1 rounded border ${a.includes("Breakfast") ? "bg-green-50 border-green-200 text-green-700" : "bg-slate-50 border-slate-200 text-slate-600"}`}>
+                          {a}
+                        </span>
+                      ))}
+                      {result.selected_hotel?.is_refundable && (
+                        <span className="text-xs font-bold px-2 py-1 rounded border bg-blue-50 border-blue-200 text-blue-700">Free Cancellation</span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 flex justify-between items-end">
+                    <div className="text-sm">
+                      {result.loyalty_details?.points_accrued > 0 && (
+                        <p className="text-amber-600 font-bold flex items-center gap-1">
+                          <Coins className="w-4 h-4"/> Earn {result.loyalty_details?.points_accrued} points
+                        </p>
+                      )}
+                    </div>
+                    <button className="bg-slate-800 hover:bg-slate-900 text-white px-6 py-2 rounded-lg font-bold transition-colors flex items-center gap-2">
+                      View Rooms <ArrowRight className="w-4 h-4"/>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
       )}

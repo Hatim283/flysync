@@ -145,6 +145,24 @@ def mock_flight_lookup(origin: str, destination: str, date: str, preferred_home_
     else:
         a1, a2, a3 = "United Airlines", "Delta Air Lines", "British Airways"
         
+    def get_logo(airline_name: str) -> str:
+        logos = {
+            "Emirates": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Emirates_logo.svg",
+            "Gulf Air": "https://upload.wikimedia.org/wikipedia/en/b/ba/Gulf_Air_logo.svg",
+            "flydubai": "https://upload.wikimedia.org/wikipedia/commons/5/52/Flydubai_Logo.svg",
+            "British Airways": "https://upload.wikimedia.org/wikipedia/en/4/42/British_Airways_Logo.svg",
+            "Virgin Atlantic": "https://upload.wikimedia.org/wikipedia/commons/2/25/Virgin_Atlantic_logo.svg",
+            "Singapore Airlines": "https://upload.wikimedia.org/wikipedia/en/6/6b/Singapore_Airlines_Logo_2.svg",
+            "Scoot": "https://upload.wikimedia.org/wikipedia/commons/3/30/Scoot_logo.svg",
+            "Qatar Airways": "https://upload.wikimedia.org/wikipedia/en/9/9b/Qatar_Airways_Logo.svg",
+            "Air India": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Air_India_Logo.svg",
+            "Vistara": "https://upload.wikimedia.org/wikipedia/en/2/25/Vistara_Logo.svg",
+            "IndiGo": "https://upload.wikimedia.org/wikipedia/commons/6/69/IndiGo_Airlines_logo.svg",
+            "United Airlines": "https://upload.wikimedia.org/wikipedia/commons/e/e0/United_Airlines_Logo.svg",
+            "Delta Air Lines": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Delta_logo.svg"
+        }
+        return logos.get(airline_name, "https://upload.wikimedia.org/wikipedia/commons/d/d1/Delta_logo.svg")
+
     # 3 mock flights matching different API sources
     flights = [
         {
@@ -158,7 +176,11 @@ def mock_flight_lookup(origin: str, destination: str, date: str, preferred_home_
             "price_native": round(base_price, 2),
             "currency_native": native_currency,
             "stops": 0,
-            "cabin_class": "economy"
+            "cabin_class": "economy",
+            "baggage": "1x23kg, 1x7kg",
+            "is_refundable": True,
+            "carbon_emission_kg": 210,
+            "logo_url": get_logo(a1)
         },
         {
             "flight_number": f"GF-{origin}-{destination}-202" if a2 == "Gulf Air" else f"VS-{origin}-{destination}-202" if a2 == "Virgin Atlantic" else f"SQ-{origin}-{destination}-202",
@@ -171,7 +193,11 @@ def mock_flight_lookup(origin: str, destination: str, date: str, preferred_home_
             "price_native": round(base_price * 0.82, 2),
             "currency_native": native_currency,
             "stops": 1,
-            "cabin_class": "economy"
+            "cabin_class": "economy",
+            "baggage": "1x7kg",
+            "is_refundable": False,
+            "carbon_emission_kg": 340,
+            "logo_url": get_logo(a2)
         },
         {
             "flight_number": f"QR-{origin}-{destination}-303" if a3 == "Qatar Airways" else f"GF-{origin}-{destination}-303" if a3 == "Gulf Air" else f"BA-{origin}-{destination}-303",
@@ -184,7 +210,11 @@ def mock_flight_lookup(origin: str, destination: str, date: str, preferred_home_
             "price_native": round(base_price * 1.28, 2),
             "currency_native": native_currency,
             "stops": 0,
-            "cabin_class": "economy"
+            "cabin_class": "economy",
+            "baggage": "2x23kg, 1x7kg",
+            "is_refundable": True,
+            "carbon_emission_kg": 255,
+            "logo_url": get_logo(a3)
         }
     ]
     
@@ -252,7 +282,10 @@ def mock_hotel_lookup(location: str, check_in: str, check_out: str, preferred_ho
             "price_native_base": round(base_price, 2),
             "currency_native": native_currency,
             "rating": 4.2,
-            "amenities": ["Wi-Fi", "Fitness Center"]
+            "amenities": ["Wi-Fi", "Fitness Center"],
+            "image_url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
+            "is_refundable": False,
+            "is_ai_recommended": False
         },
         {
             "hotel_name": h2,
@@ -260,7 +293,10 @@ def mock_hotel_lookup(location: str, check_in: str, check_out: str, preferred_ho
             "price_native_base": round(base_price * 1.45, 2),
             "currency_native": native_currency,
             "rating": 4.8,
-            "amenities": ["Wi-Fi", "Pool", "Spa", "Lounge"]
+            "amenities": ["Wi-Fi", "Pool", "Spa", "Lounge"],
+            "image_url": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80",
+            "is_refundable": True,
+            "is_ai_recommended": True
         },
         {
             "hotel_name": h3,
@@ -268,7 +304,10 @@ def mock_hotel_lookup(location: str, check_in: str, check_out: str, preferred_ho
             "price_native_base": round(base_price * 0.72, 2),
             "currency_native": native_currency,
             "rating": 3.6,
-            "amenities": ["Wi-Fi"]
+            "amenities": ["Wi-Fi"],
+            "image_url": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",
+            "is_refundable": True,
+            "is_ai_recommended": False
         }
     ]
     
@@ -293,7 +332,10 @@ def mock_hotel_lookup(location: str, check_in: str, check_out: str, preferred_ho
             "rating": h["rating"],
             "amenities": amenities,
             "check_in": check_in,
-            "check_out": check_out
+            "check_out": check_out,
+            "image_url": h["image_url"],
+            "is_refundable": h["is_refundable"],
+            "is_ai_recommended": h["is_ai_recommended"]
         })
         
     return res

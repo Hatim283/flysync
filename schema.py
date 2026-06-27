@@ -23,6 +23,10 @@ class FlightOption(BaseModel):
     price_home: float
     stops: int = 0
     cabin_class: str = "economy"
+    baggage: str = "1x23kg, 1x7kg"
+    is_refundable: bool = False
+    carbon_emission_kg: int = 250
+    logo_url: str = ""
     confirmation_number: Optional[str] = None
 
 class HotelOption(BaseModel):
@@ -36,6 +40,10 @@ class HotelOption(BaseModel):
     check_in: str
     check_out: str
     room_type: str = "standard"
+    image_url: str = "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop"
+    is_refundable: bool = False
+    is_ai_recommended: bool = False
+    map_coordinates: str = "25.2048, 55.2708"
     confirmation_number: Optional[str] = None
 
 class PriceAnalysis(BaseModel):
