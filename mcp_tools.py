@@ -51,7 +51,6 @@ def calculate_loyalty_rewards(amount_usd: float, tier: str) -> Dict[str, Any]:
     and returns tier-specific travel discounts and perks.
     Tiers: flyBronze, flySilver, flyGold, flyDiamond.
     """
-    time.sleep(15) # Rate limit throttling for Gemini Free Tier
     valid_tiers = ["flyBronze", "flySilver", "flyGold", "flyDiamond"]
     if tier not in valid_tiers:
         tier = "flyBronze"
@@ -103,7 +102,6 @@ def mock_flight_lookup(origin: str, destination: str, date: str, preferred_home_
     and returns normalized prices in the home currency.
     Uses real-world airlines (Emirates, Gulf Air, British Airways, Singapore Airlines, Qatar Airways, etc.).
     """
-    time.sleep(15) # Rate limit throttling for Gemini Free Tier
     origin = origin.upper().strip()
     destination = destination.upper().strip()
     
@@ -230,7 +228,6 @@ def mock_hotel_lookup(location: str, check_in: str, check_out: str, preferred_ho
     applies custom rewards discounts, and returns both currencies.
     Uses real-world luxury hotel chains (Burj Al Arab, Taj Mahal Palace, Savoy, Hilton, Ritz, Marina Bay Sands, etc.).
     """
-    time.sleep(15) # Rate limit throttling for Gemini Free Tier
     location = location.upper().strip()
     
     native_currency = "USD"
@@ -345,7 +342,6 @@ def check_calendar_availability(date: str, duration_days: int) -> Dict[str, Any]
     Checks user calendar for overlaps.
     Flags overlaps and displays home timezone transitions.
     """
-    time.sleep(15) # Rate limit throttling for Gemini Free Tier
     try:
         travel_start = datetime.datetime.strptime(date, "%Y-%m-%d").date()
     except ValueError:
