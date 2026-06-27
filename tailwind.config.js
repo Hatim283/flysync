@@ -12,6 +12,7 @@ module.exports = {
         success: "#10B981", // Emerald
         warning: "#F59E0B", // Amber
         background: "#0E1117",
+        foreground: "#FFFFFF",
         surface: "#1F2937",
         border: "#374151"
       }
