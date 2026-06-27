@@ -9,15 +9,3 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
     volumes:
       - .:/app
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    depends_on:
-      - backend

@@ -8,6 +8,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [agentStep, setAgentStep] = useState(0); 
   const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const simulateAgentSequence = async () => {
     // 1. Scout
@@ -26,6 +27,7 @@ export default function Home() {
     e.preventDefault();
     setLoading(true);
     setResult(null);
+    setError(null);
     setAgentStep(0);
 
     // Run UI simulation concurrently with fetch
@@ -48,14 +50,21 @@ export default function Home() {
           }
         }),
       });
+      
       const data = await response.json();
       
       // Ensure simulation finishes before showing results
       await simulationPromise;
+      
+      if (!response.ok) {
+        throw new Error(data.detail || "Failed to fetch results from the agent.");
+      }
+      
       setResult(data);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       await simulationPromise;
+      setError(err.message || "An error occurred during the agent workflow.");
     } finally {
       setLoading(false);
       setAgentStep(0);
@@ -121,6 +130,19 @@ export default function Home() {
                 {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <><Search className="w-5 h-5" /> Search</>}
               </button>
             </div>
+            
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                className="mt-6 bg-red-500/10 border border-red-500/20 backdrop-blur-md text-red-100 px-6 py-4 rounded-xl flex items-start gap-4 max-w-2xl mx-auto"
+              >
+                <ShieldAlert className="w-6 h-6 shrink-0 text-red-400 mt-1"/>
+                <div>
+                  <h4 className="font-bold text-red-300 mb-1">Agent Workflow Failed</h4>
+                  <p className="text-sm text-red-100/80">{error}</p>
+                </div>
+              </motion.div>
+            )}
           </div>
         </div>
       )}
