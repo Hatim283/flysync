@@ -1,7 +1,7 @@
 <div align="center">
   <h1>✈️ FlySync Hub</h1>
   <p><strong>A Premium AI-Powered Agentic Travel Concierge</strong></p>
-  <p><em>Built for the "Build with AI" Hackathon</em></p>
+  <p><em>Engineered for the GeeksforGeeks Build with AI UAE Workshop</em></p>
 
   [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
   [![Next.js](https://img.shields.io/badge/Next.js-14.2-black?logo=next.js)](https://nextjs.org/)
@@ -11,36 +11,33 @@
 
 <br />
 
-> **⚠️ Hackathon Disclaimer:** 
-> FlySync is a **proof-of-concept demonstration** built specifically for hackathon judging. To ensure a lightning-fast, highly reliable, and predictable experience for judges, the flight availability, hotel bookings, and pricing displayed in the UI use **mocked fallback data**. No real-time third-party booking APIs are currently connected, and no actual transactions occur. Our primary engineering focus was on building the complex **Multi-Agent Orchestration Architecture** and delivering a flawless, premium **User Experience**.
+> **⚠️ Workshop Evaluation Note:** > FlySync Hub is a **proof-of-concept demonstration** built to showcase advanced LLM orchestration. To ensure a highly reliable and predictable evaluation experience for judges, the flight availability, hotel inventory, and dynamic pricing metrics utilize **mocked fallback data**. Our primary engineering focus was architecting the **Multi-Agent Orchestration Engine** and delivering a frictionless frontend experience, rather than connecting live, rate-limited transactional APIs.
 
 ---
 
 ## 🌟 The Vision
 
-Booking travel today is a fragmented, exhausting process of opening dozens of tabs, cross-referencing calendars, calculating loyalty points, and constantly worrying about budget constraints.
+Modern travel planning is a fragmented logistics puzzle requiring users to manually cross-reference calendars, optimize budgets, and parse dozens of disparate booking platforms. 
 
-**FlySync** solves this. It is a state-of-the-art travel platform powered by dynamic LLM logic and Google's Gemini 2.5 Flash API. Instead of a simple chatbot, FlySync utilizes an orchestration graph of specialized AI sub-agents that work together to autonomously plan your perfect trip.
+**FlySync Hub** solves this through autonomous AI. Powered by Google's Gemini 2.5 Flash API, FlySync moves beyond simple conversational chatbots. It utilizes an orchestration graph of specialized AI sub-agents that collaborate in parallel to curate, optimize, and present the perfect itinerary.
 
-## ✨ Key Features
+## ✨ Key Features & AI Integration
 
-- 🤖 **Agentic Orchestration Graph**: A robust hybrid-fallback graph orchestrator managing three distinct AI sub-agents in parallel.
-- 🛫 **The Scout Agent**: Aggregates, cross-references, and deduplicates flight & hotel listings, ensuring options remain within your specified budget (Smart Budget Shield).
-- 📅 **The Sync Coordinator**: Checks for calendar conflicts and intelligently flags overlapping events or time-zone issues.
-- 🛡️ **The Sentinel Agent**: Evaluates real-time price trends, calculates loyalty program rewards, and resolves customer support tickets autonomously.
-- ⚡ **Premium UI/UX**: A fast, responsive frontend powered by Next.js and TailwindCSS, featuring smooth micro-animations and a polished checkout flow.
-- 🌓 **Dynamic Theming**: Full Tailwind Dark & Light Mode support, seamlessly toggled to match user preferences.
-- 💳 **Seamless Checkout**: Smooth transition from AI recommendations into a comprehensive, itemized Checkout Summary view.
+- 🤖 **Agentic Orchestration Graph:** A robust hybrid-fallback orchestrator managing three distinct, parallel AI sub-agents to process complex user constraints.
+- 🛫 **The Scout Agent (Inventory Engine):** Autonomously aggregates, cross-references, and deduplicates flight and hotel listings, enforcing a "Smart Budget Shield" to keep recommendations within predefined parameters.
+- 📅 **The Sync Coordinator (Logistics):** Evaluates selected travel dates against simulated user schedules, intelligently flagging timezone conflicts and overlapping events.
+- 🛡️ **The Sentinel Agent (Analytics):** Evaluates dynamic price trends and calculates applicable loyalty program rewards (HM Gold Member) to maximize user value.
+- ⚡ **Premium UI/UX:** A high-performance frontend built with Next.js and Tailwind CSS, featuring asynchronous loading states to visually communicate backend agent activity to the user.
 
 ---
 
 ## 🏗️ Technical Architecture
 
-FlySync relies on a modern split architecture to handle complex AI processing without sacrificing frontend performance.
+FlySync relies on a decoupled architecture to isolate intensive LLM inference tasks from the client, ensuring optimal frontend performance.
 
 ```mermaid
 graph TD;
-    User[User UI / Next.js] -->|Search Request| API(FastAPI Backend)
+    User[Client / Next.js] -->|Search Payload| API(FastAPI Backend)
     API --> Graph(FlySync Orchestrator)
     Graph --> Gemini[Gemini 2.5 Flash API]
     
@@ -53,80 +50,88 @@ graph TD;
     Scout -.->|MCP Tools| Flights/Hotels
     Sync -.->|MCP Tools| Calendar
     Sentinel -.->|MCP Tools| Price/Loyalty
+
 ```
 
 ### 🛠️ Tech Stack
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS, Lucide Icons, Framer Motion
-- **Backend Orchestrator**: Python, FastAPI
-- **AI Core**: Google Gemini 2.5 Flash API
-- **Infrastructure**: Vercel (Frontend Hosting) & Google Cloud Run (Backend Hosting)
+
+* **AI Core:** Google Gemini 2.5 Flash API
+* **Backend Orchestrator:** Python, FastAPI
+* **Frontend Client:** Next.js 14, TypeScript, Tailwind CSS, Framer Motion
+* **Infrastructure:** Vercel (Edge Networks) & Google Cloud Run (Containerized Backend)
 
 ---
 
-## 🚀 Getting Started Locally
+## 🚀 Installation Instructions
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/en/) (v18+)
-- [Python](https://www.python.org/) (3.9+)
-- A [Google Gemini API Key](https://aistudio.google.com/)
 
-### 1. Backend Setup (FastAPI)
-The backend manages the orchestration graph and LLM communication.
+* Node.js (v18+)
+* Python (3.9+)
+* A [Google Gemini API Key](https://aistudio.google.com/)
+
+### 1. Backend Environment (FastAPI)
+
+The backend manages the orchestration graph and handles all LLM communication.
+
 ```bash
 # Clone the repository
 git clone https://github.com/Hatim283/flysync.git
 cd flysync
 
-# Install dependencies
+# Install Python dependencies
 pip install -r requirements.txt
 
-# Export your Gemini API Key
+# Configure your Gemini API Key
 export GEMINI_API_KEY="your_api_key_here"
 
-# Start the development server
+# Initialize the development server
 uvicorn backend.main:app --reload
-```
-*The backend runs at `http://localhost:8000`.*
 
-### 2. Frontend Setup (Next.js)
+```
+
+*The backend service runs at `http://localhost:8000`.*
+
+### 2. Frontend Environment (Next.js)
+
 ```bash
 cd frontend
 
-# Install dependencies
+# Install Node dependencies
 npm install
 
-# Start the frontend development server
+# Initialize the frontend development server
 npm run dev
+
 ```
-*The frontend runs at `http://localhost:3000`.*
+
+*The client application runs at `http://localhost:3000`.*
 
 ---
 
-## ☁️ Deployment Architecture
+## 💻 Usage & Navigation
 
-FlySync is deployed using a highly scalable, serverless approach:
+Once both servers are running, follow these steps to test the AI orchestration:
 
-1. **Google Cloud Run**: The Python FastAPI backend is containerized via Docker and deployed to Cloud Run, allowing it to seamlessly scale based on the load of incoming AI inference requests.
-2. **Vercel**: The Next.js frontend is deployed on Vercel Edge Networks, proxying API requests directly to the Cloud Run backend via the `NEXT_PUBLIC_BACKEND_URL` environment variable.
+1. Navigate to the landing page and input your origin (e.g., DXB), destination, and travel dates.
+2. Click **Search**. You will see the asynchronous loading modal visually indicating the states of the Scout, Sync, and Sentinel agents as they process the request via the backend.
+3. Review the curated **Recommended Flight** and **AI Recommended Stay**, noting the loyalty points integration.
+4. Select your preferred options and proceed to the **Checkout Summary** for a final breakdown of the itinerary.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Hatim283/flysync/issues).
+Contributions, optimizations, and feature requests are welcome!
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
+2. Create your Feature Branch (`git checkout -b feature/Optimization`)
+3. Commit your Changes (`git commit -m 'Add Optimization'`)
+4. Push to the Branch (`git push origin feature/Optimization`)
 5. Open a Pull Request
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-<div align="center">
-  <sub>Built with ❤️ by <a href="https://github.com/Hatim283">Hatim283</a> for the Build with AI Hackathon</sub>
-</div>
+This project is licensed under the MIT License - see the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
