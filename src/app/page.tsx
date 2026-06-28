@@ -126,10 +126,13 @@ export default function Home() {
       {/* Navbar */}
       <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-blue-600 dark:text-blue-500">
+          <button 
+            onClick={() => { setResult(null); setShowCheckout(false); setError(null); }}
+            className="flex items-center gap-2 text-blue-600 dark:text-blue-500 hover:opacity-80 transition-opacity"
+          >
             <PlaneTakeoff className="w-7 h-7" />
             <h1 className="text-2xl font-black tracking-tight">FlySync<span className="text-slate-800 dark:text-slate-100">Hub</span></h1>
-          </div>
+          </button>
           <nav className="hidden md:flex gap-8 text-sm font-semibold text-slate-600 dark:text-slate-400">
             <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors border-b-2 border-blue-600 dark:border-blue-500 pb-5 translate-y-[10px]">Flights & Hotels</a>
             <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1"><Coins className="w-4 h-4 text-amber-500"/> Rewards</a>
