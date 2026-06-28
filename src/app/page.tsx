@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PlaneTakeoff, Hotel, CalendarDays, Coins, BrainCircuit, Loader2, ArrowRight, MapPin, CheckCircle2, ShieldAlert, Sparkles, Leaf, Briefcase, Filter, Search, ChevronDown, ChevronUp, CircleDollarSign, Moon, Sun, CheckCircle } from "lucide-react";
+import { PlaneTakeoff, Hotel, CalendarDays, Coins, BrainCircuit, Loader2, ArrowRight, MapPin, CheckCircle2, ShieldAlert, Sparkles, Leaf, Briefcase, Filter, Search, ChevronDown, ChevronUp, CircleDollarSign, Moon, Sun, CheckCircle, Trophy, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
@@ -20,6 +20,7 @@ export default function Home() {
   const [isFlightExpanded, setIsFlightExpanded] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [showRewards, setShowRewards] = useState(false);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -137,7 +138,7 @@ export default function Home() {
           </button>
           <nav className="hidden md:flex gap-8 text-sm font-semibold text-slate-600 dark:text-slate-400">
             <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors border-b-2 border-blue-600 dark:border-blue-500 pb-5 translate-y-[10px]">Flights & Hotels</a>
-            <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1"><Coins className="w-4 h-4 text-amber-500"/> Rewards</a>
+            <button onClick={() => setShowRewards(true)} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors flex items-center gap-1"><Coins className="w-4 h-4 text-amber-500"/> Rewards</button>
           </nav>
           <div className="flex items-center gap-4">
             <button onClick={() => setIsDarkMode(!isDarkMode)} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors">
@@ -621,6 +622,116 @@ export default function Home() {
           </div>
         </div>
       )}
+      {/* Rewards Modal */}
+      <AnimatePresence>
+        {showRewards && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 overflow-hidden relative"
+            >
+              <button 
+                onClick={() => setShowRewards(false)}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors z-10"
+              >
+                <X className="w-5 h-5"/>
+              </button>
+
+              <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-8 text-white relative overflow-hidden">
+                <div className="absolute right-0 top-0 opacity-10 transform translate-x-1/4 -translate-y-1/4 scale-150">
+                  <Trophy className="w-64 h-64"/>
+                </div>
+                <div className="relative z-10 flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur border-2 border-white/40 flex items-center justify-center font-black text-2xl">HM</div>
+                  <div>
+                    <h2 className="text-3xl font-black">flyGold Member</h2>
+                    <p className="text-amber-100 font-medium">Hatim Madarwala</p>
+                  </div>
+                </div>
+                
+                <div className="relative z-10">
+                  <p className="text-amber-100 text-sm font-bold uppercase tracking-wider mb-1">Total Balance</p>
+                  <p className="text-5xl font-black flex items-center gap-2"><Coins className="w-8 h-8"/> 15,000 <span className="text-xl font-medium text-amber-200">pts</span></p>
+                </div>
+              </div>
+
+              <div className="p-8 space-y-8">
+                {/* Progress to Next Tier */}
+                <div>
+                  <div className="flex justify-between items-end mb-2">
+                    <h3 className="font-bold text-slate-800 dark:text-slate-100">Progress to flyPlatinum</h3>
+                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400">10,000 pts to go</span>
+                  </div>
+                  <div className="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-blue-500 w-[60%] rounded-full"></div>
+                  </div>
+                  <div className="flex justify-between mt-2 text-xs font-bold text-slate-400">
+                    <span>Gold (Current)</span>
+                    <span>Platinum (25k pts)</span>
+                    <span>Diamond (50k pts)</span>
+                  </div>
+                </div>
+
+                {/* Perks */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl text-center border border-slate-100 dark:border-slate-800">
+                    <div className="w-10 h-10 mx-auto bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mb-2"><PlaneTakeoff className="w-5 h-5"/></div>
+                    <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Priority Boarding</p>
+                  </div>
+                  <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl text-center border border-slate-100 dark:border-slate-800">
+                    <div className="w-10 h-10 mx-auto bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center mb-2"><Trophy className="w-5 h-5"/></div>
+                    <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Lounge Access</p>
+                  </div>
+                  <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl text-center border border-slate-100 dark:border-slate-800 opacity-50 grayscale">
+                    <div className="w-10 h-10 mx-auto bg-slate-200 dark:bg-slate-700 text-slate-500 rounded-full flex items-center justify-center mb-2"><Sparkles className="w-5 h-5"/></div>
+                    <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Free Upgrades</p>
+                    <p className="text-[10px] text-blue-500 mt-1">Unlock at Platinum</p>
+                  </div>
+                  <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl text-center border border-slate-100 dark:border-slate-800 opacity-50 grayscale">
+                    <div className="w-10 h-10 mx-auto bg-slate-200 dark:bg-slate-700 text-slate-500 rounded-full flex items-center justify-center mb-2"><Briefcase className="w-5 h-5"/></div>
+                    <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Extra Baggage</p>
+                    <p className="text-[10px] text-blue-500 mt-1">Unlock at Diamond</p>
+                  </div>
+                </div>
+
+                {/* Recent Activity */}
+                <div>
+                  <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-4">Recent Activity</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 p-2 rounded-lg"><Coins className="w-4 h-4"/></div>
+                        <div>
+                          <p className="font-bold text-sm text-slate-800 dark:text-slate-200">Flight Booking (DXB to LHR)</p>
+                          <p className="text-xs text-slate-500">June 20, 2026</p>
+                        </div>
+                      </div>
+                      <span className="font-black text-green-600 dark:text-green-400">+2,500 pts</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 p-2 rounded-lg"><Coins className="w-4 h-4"/></div>
+                        <div>
+                          <p className="font-bold text-sm text-slate-800 dark:text-slate-200">Hotel Booking (The Savoy)</p>
+                          <p className="text-xs text-slate-500">June 20, 2026</p>
+                        </div>
+                      </div>
+                      <span className="font-black text-green-600 dark:text-green-400">+800 pts</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
