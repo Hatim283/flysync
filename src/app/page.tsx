@@ -7,15 +7,15 @@ import { motion, AnimatePresence } from "framer-motion";
 const getAirlineLogo = (airline: string | undefined, fallbackUrl: string | undefined) => {
   if (!airline) return fallbackUrl || "";
   const normalized = airline.toLowerCase().replace(/\s+/g, '');
-  if (normalized.includes('emirates')) return 'https://logo.clearbit.com/emirates.com';
-  if (normalized.includes('airindia')) return 'https://logo.clearbit.com/airindia.com';
-  if (normalized.includes('vistara')) return 'https://logo.clearbit.com/airvistara.com';
-  if (normalized.includes('gulfair')) return 'https://logo.clearbit.com/gulfair.com';
-  if (normalized.includes('flydubai')) return 'https://logo.clearbit.com/flydubai.com';
-  if (normalized.includes('qatar')) return 'https://logo.clearbit.com/qatarairways.com';
-  if (normalized.includes('british')) return 'https://logo.clearbit.com/britishairways.com';
-  if (normalized.includes('etihad')) return 'https://logo.clearbit.com/etihad.com';
-  if (normalized.includes('indigo')) return 'https://logo.clearbit.com/goindigo.in';
+  if (normalized.includes('emirates')) return 'https://upload.wikimedia.org/wikipedia/commons/d/d0/Emirates_logo.svg';
+  if (normalized.includes('airindia')) return 'https://upload.wikimedia.org/wikipedia/commons/8/82/Air_India_Logo.svg';
+  if (normalized.includes('vistara')) return 'https://upload.wikimedia.org/wikipedia/commons/4/4b/Vistara_Logo.svg';
+  if (normalized.includes('gulfair')) return 'https://upload.wikimedia.org/wikipedia/en/b/b3/Gulf_Air_logo.svg';
+  if (normalized.includes('flydubai')) return 'https://upload.wikimedia.org/wikipedia/commons/4/41/Flydubai_logo.svg';
+  if (normalized.includes('qatar')) return 'https://upload.wikimedia.org/wikipedia/en/9/9b/Qatar_Airways_Logo.svg';
+  if (normalized.includes('british')) return 'https://upload.wikimedia.org/wikipedia/en/4/42/British_Airways_Logo.svg';
+  if (normalized.includes('etihad')) return 'https://upload.wikimedia.org/wikipedia/commons/0/03/Etihad_Airways_Logo.svg';
+  if (normalized.includes('indigo')) return 'https://upload.wikimedia.org/wikipedia/commons/6/69/IndiGo_Airlines_logo.svg';
   
   // If no match, try using the URL provided by the AI, or generate a fallback initial
   return fallbackUrl || `https://ui-avatars.com/api/?name=${airline}&background=random`;
