@@ -23,6 +23,19 @@ FlySync is a state-of-the-art travel platform powered by dynamic LLM logic and G
 - 🛡️ **The Sentinel Agent**: Evaluates real-time price trends, calculates loyalty program rewards, and resolves customer support tickets autonomously.
 - ⚡ **Modern Stack**: Fast, responsive frontend powered by Next.js and TailwindCSS, backed by a high-performance Python FastAPI server.
 
+## 🤖 AI Features (GFG Build with AI)
+
+- **Scout Agent**: Uses Gemini AI to find optimal flights and hotels
+- **Sync Coordinator**: AI-powered calendar conflict resolution  
+- **Sentinel Agent**: Dynamic pricing evaluation using ML models
+
+## 🛠️ Tech Stack
+
+- Next.js 14, TypeScript, Tailwind CSS
+- Python, FastAPI
+- Google Gemini AI API
+- Vercel Deployment & Google Cloud Run
+
 ---
 
 ## 🏗️ Architecture
@@ -88,16 +101,44 @@ npm run dev
 
 ---
 
-## ☁️ Deployment (Vercel)
+## ☁️ Deployment (Google Cloud Run + Vercel)
 
-FlySync is optimized for serverless deployment on Vercel. 
+FlySync uses a split architecture for production: the Next.js frontend on Vercel and the FastAPI backend on Google Cloud Run.
 
-1. Push your code to GitHub.
-2. Import the repository into your Vercel Dashboard.
-3. Configure the following **Project Settings**:
-   - **Root Directory**: `frontend` (Or keep it at `./` and override the build settings to build the `frontend` folder).
-   - Add your `GEMINI_API_KEY` to the **Environment Variables**.
-4. The included `vercel.json` ensures that all `/api/*` traffic is routed correctly to the FastAPI serverless functions.
+### 1. Enable Google Cloud Services
+Ensure you have the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install) installed and authenticated. Then enable the necessary services:
+```bash
+gcloud services enable \
+  run.googleapis.com \
+  cloudbuild.googleapis.com
+```
+
+### 2. Deploy the Backend from Source
+Run this single command inside the root of your `flysync` folder (where the `Dockerfile` is):
+```bash
+gcloud run deploy flysync-backend \
+  --source . \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars="GEMINI_API_KEY=your_actual_api_key_here"
+```
+*(Replace `your_actual_api_key_here` with your real Gemini API key).*
+
+### 3. Get your URL
+Once the deployment finishes (it takes about 2-3 minutes to build and deploy), the terminal will output a **Service URL** that looks like this:
+`https://flysync-backend-xyz.a.run.app`
+
+### 4. Final Step: Connect Vercel to Google Cloud Run
+Whichever method you choose, Google Cloud Run will give you a public URL for your backend.
+
+1. Copy that URL.
+2. Go to your **Vercel Dashboard** > Select the `flysync` project > **Settings** > **Environment Variables**.
+3. Add a new variable:
+   - **Key:** `NEXT_PUBLIC_BACKEND_URL`
+   - **Value:** `https://flysync-backend-xyz.a.run.app` *(paste your actual Cloud Run URL here, make sure there is no trailing slash `/` at the end).*
+4. **Redeploy your Vercel app** (Go to Deployments -> Redeploy) so the frontend picks up the new environment variable.
+
+Your Next.js frontend will now seamlessly proxy all API requests to your Google Cloud Run backend.
 
 ---
 

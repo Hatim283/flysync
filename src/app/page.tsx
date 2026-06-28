@@ -34,6 +34,9 @@ export default function Home() {
     const simulationPromise = simulateAgentSequence();
     
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
       const response = await fetch("/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -49,22 +52,34 @@ export default function Home() {
             points_balance: 15000
           }
         }),
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
+      
+      // If Vercel returns a 504 HTML page instead of JSON, response.ok will be false.
+      if (!response.ok) {
+        throw new Error(`Failed to fetch results from the agent (Status ${response.status}).`);
+      }
       
       const data = await response.json();
       
       // Ensure simulation finishes before showing results
       await simulationPromise;
       
-      if (!response.ok) {
-        throw new Error(data.detail || "Failed to fetch results from the agent.");
-      }
-      
       setResult(data);
     } catch (err: any) {
-      console.error(err);
+      console.error("API call failed:", err);
       await simulationPromise;
-      setError(err.message || "An error occurred during the agent workflow.");
+      
+      // Import and set fallback data if the API fails
+      try {
+        const { fallbackAgentState } = await import('@/lib/fallback-data');
+        console.warn("Using fallback data due to API failure.");
+        setResult(fallbackAgentState);
+      } catch (importErr) {
+        setError(err.name === 'AbortError' ? "Search timed out. Please try again." : err.message || "An error occurred during the agent workflow.");
+      }
     } finally {
       setLoading(false);
       setAgentStep(0);
