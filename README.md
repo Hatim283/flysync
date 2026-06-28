@@ -22,6 +22,8 @@ FlySync is a state-of-the-art travel platform powered by dynamic LLM logic and G
 - 📅 **The Sync Coordinator**: Checks for calendar conflicts and flags overlapping events or time-zone issues.
 - 🛡️ **The Sentinel Agent**: Evaluates real-time price trends, calculates loyalty program rewards, and resolves customer support tickets autonomously.
 - ⚡ **Modern Stack**: Fast, responsive frontend powered by Next.js and TailwindCSS, backed by a high-performance Python FastAPI server.
+- 🌓 **Dynamic Theming**: Full Tailwind Dark & Light Mode support, seamlessly toggled via the navbar.
+- 💳 **Seamless Checkout**: Smooth transition into a comprehensive Checkout Summary view for final itinerary review.
 
 ## 🤖 AI Features (GFG Build with AI)
 
