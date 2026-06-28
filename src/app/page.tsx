@@ -488,6 +488,36 @@ export default function Home() {
                 </div>
               </div>
 
+              </div>
+
+              {/* Special Deals Section */}
+              <div className="pt-8">
+                <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2"><Sparkles className="w-5 h-5 text-amber-500"/> Exclusive Add-ons</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800/50 flex items-start gap-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <div className="bg-amber-100 dark:bg-amber-900/50 p-2 rounded-lg text-amber-600 dark:text-amber-400 shrink-0">
+                      <Briefcase className="w-6 h-6"/>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-amber-900 dark:text-amber-100 text-sm mb-1">Extra 20kg Baggage</h4>
+                      <p className="text-xs text-amber-700/80 dark:text-amber-300/80 mb-2">Pre-book now and save 40% on airport rates.</p>
+                      <p className="font-bold text-amber-600 dark:text-amber-400 text-sm">+{currency === "GBP" ? "£" : currency === "EUR" ? "€" : currency === "AED" ? "د.إ" : "$"}35.00</p>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800/50 flex items-start gap-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg text-blue-600 dark:text-blue-400 shrink-0">
+                      <ShieldAlert className="w-6 h-6"/>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-blue-900 dark:text-blue-100 text-sm mb-1">Travel Insurance</h4>
+                      <p className="text-xs text-blue-700/80 dark:text-blue-300/80 mb-2">Full coverage for delays, cancellations & medical.</p>
+                      <p className="font-bold text-blue-600 dark:text-blue-400 text-sm">+{currency === "GBP" ? "£" : currency === "EUR" ? "€" : currency === "AED" ? "د.إ" : "$"}18.50</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
