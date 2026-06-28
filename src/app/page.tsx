@@ -488,7 +488,6 @@ export default function Home() {
                 </div>
               </div>
 
-              </div>
 
               {/* Special Deals Section */}
               <div className="pt-8">
