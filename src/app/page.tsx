@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PlaneTakeoff, Hotel, CalendarDays, Coins, BrainCircuit, Loader2, ArrowRight, MapPin, CheckCircle2, ShieldAlert, Sparkles, Leaf, Briefcase, Filter, Search } from "lucide-react";
+import { PlaneTakeoff, Hotel, CalendarDays, Coins, BrainCircuit, Loader2, ArrowRight, MapPin, CheckCircle2, ShieldAlert, Sparkles, Leaf, Briefcase, Filter, Search, ChevronDown, ChevronUp, CircleDollarSign } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
@@ -9,6 +9,15 @@ export default function Home() {
   const [agentStep, setAgentStep] = useState(0); 
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  
+  // Search Form State
+  const [origin, setOrigin] = useState("DXB");
+  const [destination, setDestination] = useState("LHR");
+  const [travelDate, setTravelDate] = useState("2026-07-05");
+  const [currency, setCurrency] = useState("USD");
+
+  // UI State
+  const [isFlightExpanded, setIsFlightExpanded] = useState(false);
 
   const simulateAgentSequence = async () => {
     // 1. Scout
@@ -41,11 +50,11 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          origin: "DXB",
-          destination: "LHR",
-          travel_date: "2026-07-05",
+          origin: origin,
+          destination: destination,
+          travel_date: travelDate,
           preferences: {
-            home_currency: "USD",
+            home_currency: currency,
             preferred_seating: "window",
             membership_tier: "flyGold",
             max_budget: 3500.0,
@@ -76,7 +85,22 @@ export default function Home() {
       try {
         const { fallbackAgentState } = await import('@/lib/fallback-data');
         console.warn("Using fallback data due to API failure.");
-        setResult(fallbackAgentState);
+        
+        // Dynamically override fallback data to match user's search
+        const dynamicFallback = JSON.parse(JSON.stringify(fallbackAgentState));
+        dynamicFallback.user_preferences.home_currency = currency;
+        if (dynamicFallback.selected_flight) {
+          dynamicFallback.selected_flight.origin = origin;
+          dynamicFallback.selected_flight.destination = destination;
+          dynamicFallback.flight_options[0].origin = origin;
+          dynamicFallback.flight_options[0].destination = destination;
+          
+          if (currency === "GBP") dynamicFallback.selected_flight.price_home = 540;
+          else if (currency === "EUR") dynamicFallback.selected_flight.price_home = 630;
+          else if (currency === "AED") dynamicFallback.selected_flight.price_home = 2500;
+        }
+        
+        setResult(dynamicFallback);
       } catch (importErr) {
         setError(err.name === 'AbortError' ? "Search timed out. Please try again." : err.message || "An error occurred during the agent workflow.");
       }
@@ -115,26 +139,38 @@ export default function Home() {
             <p className="text-blue-200 text-lg mb-10">Let FlySync's agentic concierge orchestrate your perfect itinerary.</p>
             
             {/* Search Widget */}
-            <div className="bg-white p-3 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2">
-              <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3 hover:border-blue-400 transition-colors">
-                <PlaneTakeoff className="text-slate-400 w-5 h-5 ml-2" />
+            <div className="bg-white p-3 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2 flex-wrap lg:flex-nowrap">
+              <div className="flex-1 min-w-[150px] bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3 hover:border-blue-400 transition-colors">
+                <PlaneTakeoff className="text-slate-400 w-5 h-5 ml-2 shrink-0" />
                 <div className="flex-1">
                   <label className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Origin</label>
-                  <input type="text" defaultValue="DXB (Dubai)" className="w-full bg-transparent border-none outline-none text-slate-900 font-bold" />
+                  <input type="text" value={origin} onChange={e => setOrigin(e.target.value)} className="w-full bg-transparent border-none outline-none text-slate-900 font-bold" />
                 </div>
               </div>
-              <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3 hover:border-blue-400 transition-colors">
-                <MapPin className="text-slate-400 w-5 h-5 ml-2" />
+              <div className="flex-1 min-w-[150px] bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3 hover:border-blue-400 transition-colors">
+                <MapPin className="text-slate-400 w-5 h-5 ml-2 shrink-0" />
                 <div className="flex-1">
                   <label className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Destination</label>
-                  <input type="text" defaultValue="LHR (London)" className="w-full bg-transparent border-none outline-none text-slate-900 font-bold" />
+                  <input type="text" value={destination} onChange={e => setDestination(e.target.value)} className="w-full bg-transparent border-none outline-none text-slate-900 font-bold" />
                 </div>
               </div>
-              <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3 hover:border-blue-400 transition-colors">
-                <CalendarDays className="text-slate-400 w-5 h-5 ml-2" />
+              <div className="flex-1 min-w-[150px] bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3 hover:border-blue-400 transition-colors">
+                <CalendarDays className="text-slate-400 w-5 h-5 ml-2 shrink-0" />
                 <div className="flex-1">
                   <label className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Travel Date</label>
-                  <input type="date" defaultValue="2026-07-05" className="w-full bg-transparent border-none outline-none text-slate-900 font-bold" />
+                  <input type="date" value={travelDate} onChange={e => setTravelDate(e.target.value)} className="w-full bg-transparent border-none outline-none text-slate-900 font-bold" />
+                </div>
+              </div>
+              <div className="flex-1 min-w-[120px] bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3 hover:border-blue-400 transition-colors">
+                <CircleDollarSign className="text-slate-400 w-5 h-5 ml-2 shrink-0" />
+                <div className="flex-1">
+                  <label className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Currency</label>
+                  <select value={currency} onChange={e => setCurrency(e.target.value)} className="w-full bg-transparent border-none outline-none text-slate-900 font-bold cursor-pointer appearance-none">
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                    <option value="AED">AED (د.إ)</option>
+                  </select>
                 </div>
               </div>
               <button 
@@ -267,14 +303,22 @@ export default function Home() {
               
               {/* Flight Card */}
               <h3 className="text-xl font-black text-slate-800 mb-4">Recommended Flight</h3>
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 hover:border-blue-300 transition-colors overflow-hidden group">
+              <div 
+                className="bg-white rounded-2xl shadow-sm border border-slate-200 hover:border-blue-300 transition-colors overflow-hidden group cursor-pointer"
+                onClick={() => setIsFlightExpanded(!isFlightExpanded)}
+              >
                 <div className="bg-slate-50 px-6 py-3 border-b border-slate-200 flex justify-between items-center">
                   <div className="flex gap-2">
                     <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">Best Value</span>
                     {result.selected_flight?.is_refundable && <span className="bg-slate-200 text-slate-700 text-xs font-bold px-2 py-1 rounded">Refundable</span>}
                   </div>
-                  <div className="flex items-center gap-1 text-xs text-green-700 font-medium">
-                    <Leaf className="w-3 h-3"/> {result.selected_flight?.carbon_emission_kg} kg CO2e
+                  <div className="flex items-center gap-3 text-xs font-medium">
+                    <div className="flex items-center gap-1 text-green-700">
+                      <Leaf className="w-3 h-3"/> {result.selected_flight?.carbon_emission_kg} kg CO2e
+                    </div>
+                    <div className="text-slate-400 flex items-center gap-1 hover:text-slate-600">
+                      {isFlightExpanded ? <ChevronUp className="w-4 h-4"/> : <ChevronDown className="w-4 h-4"/>}
+                    </div>
                   </div>
                 </div>
                 
@@ -287,7 +331,7 @@ export default function Home() {
                   {/* Flight Times & Timeline */}
                   <div className="flex-1 flex items-center justify-between md:px-8">
                     <div className="text-center">
-                      <p className="text-2xl font-black text-slate-800">{result.selected_flight?.departure_time.split('T')[1].slice(0, 5)}</p>
+                      <p className="text-2xl font-black text-slate-800">{result.selected_flight?.departure_time.split('T').length > 1 ? result.selected_flight?.departure_time.split('T')[1].slice(0, 5) : result.selected_flight?.departure_time.slice(0, 5)}</p>
                       <p className="text-sm font-bold text-slate-500">{result.selected_flight?.origin}</p>
                     </div>
                     
@@ -301,7 +345,7 @@ export default function Home() {
                     </div>
 
                     <div className="text-center">
-                      <p className="text-2xl font-black text-slate-800">{result.selected_flight?.arrival_time.split('T')[1].slice(0, 5)}</p>
+                      <p className="text-2xl font-black text-slate-800">{result.selected_flight?.arrival_time.split('T').length > 1 ? result.selected_flight?.arrival_time.split('T')[1].slice(0, 5) : result.selected_flight?.arrival_time.slice(0, 5)}</p>
                       <p className="text-sm font-bold text-slate-500">{result.selected_flight?.destination}</p>
                     </div>
                   </div>
@@ -311,11 +355,51 @@ export default function Home() {
                     <div className="flex items-center justify-end gap-1 mb-1 text-slate-500">
                       <Briefcase className="w-4 h-4" /> <span className="text-xs font-medium">{result.selected_flight?.baggage}</span>
                     </div>
-                    <p className="text-3xl font-black text-slate-800">${result.selected_flight?.price_home}</p>
+                    <p className="text-3xl font-black text-slate-800">{currency === "GBP" ? "£" : currency === "EUR" ? "€" : currency === "AED" ? "د.إ" : "$"}{result.selected_flight?.price_home}</p>
                     <p className="text-xs font-medium text-slate-500 mb-3">Total price</p>
-                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold transition-colors">Select</button>
+                    <button 
+                      onClick={(e) => e.stopPropagation()} 
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold transition-colors"
+                    >
+                      Select
+                    </button>
                   </div>
                 </div>
+
+                {/* Expandable Summary */}
+                <AnimatePresence>
+                  {isFlightExpanded && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden border-t border-slate-100 bg-slate-50/50"
+                    >
+                      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                        <div>
+                          <h4 className="font-bold text-slate-800 mb-3">Flight Details</h4>
+                          <div className="space-y-2 text-slate-600">
+                            <p><span className="font-medium text-slate-400 w-24 inline-block">Flight:</span> {result.selected_flight?.airline} {result.selected_flight?.flight_number}</p>
+                            <p><span className="font-medium text-slate-400 w-24 inline-block">Class:</span> <span className="capitalize">{result.selected_flight?.cabin_class}</span></p>
+                            <p><span className="font-medium text-slate-400 w-24 inline-block">Aircraft:</span> Boeing 777-300ER (Mocked)</p>
+                            {result.selected_flight?.confirmation_number && (
+                              <p><span className="font-medium text-slate-400 w-24 inline-block">PNR:</span> <span className="font-bold text-slate-800 bg-slate-200 px-1 rounded">{result.selected_flight?.confirmation_number}</span></p>
+                            )}
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-slate-800 mb-3">Policies & Extras</h4>
+                          <div className="space-y-2 text-slate-600">
+                            <p><span className="font-medium text-slate-400 w-24 inline-block">Baggage:</span> {result.selected_flight?.baggage}</p>
+                            <p><span className="font-medium text-slate-400 w-24 inline-block">Cancellation:</span> {result.selected_flight?.is_refundable ? "Fully Refundable before 24h" : "Non-refundable"}</p>
+                            <p><span className="font-medium text-slate-400 w-24 inline-block">Changes:</span> Permitted with fee</p>
+                            <p><span className="font-medium text-slate-400 w-24 inline-block">Emissions:</span> {result.selected_flight?.carbon_emission_kg} kg (12% lower than average)</p>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Hotel Card */}
