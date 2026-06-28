@@ -103,8 +103,10 @@ export default function Home() {
         if (dynamicFallback.selected_flight) {
           dynamicFallback.selected_flight.origin = origin;
           dynamicFallback.selected_flight.destination = destination;
-          dynamicFallback.flight_options[0].origin = origin;
-          dynamicFallback.flight_options[0].destination = destination;
+          dynamicFallback.flight_options.forEach((flight: any) => {
+            flight.origin = origin;
+            flight.destination = destination;
+          });
           
           if (currency === "GBP") dynamicFallback.selected_flight.price_home = 540;
           else if (currency === "EUR") dynamicFallback.selected_flight.price_home = 630;
@@ -430,6 +432,35 @@ export default function Home() {
                   )}
                 </AnimatePresence>
               </div>
+
+              {/* Alternative Flights */}
+              {result.flight_options?.length > 1 && (
+                <div className="mt-4 space-y-3">
+                  <h4 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Alternative Flights</h4>
+                  {result.flight_options.filter((f: any) => f.flight_number !== result.selected_flight?.flight_number).map((flight: any, idx: number) => (
+                    <div key={idx} className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between hover:border-blue-300 dark:hover:border-blue-500 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <img src={flight.logo_url} alt={flight.airline} className="w-10 h-10 object-contain dark:invert bg-white dark:bg-transparent rounded-md p-1" />
+                        <div>
+                          <p className="font-bold text-slate-800 dark:text-slate-100">{flight.departure_time.slice(0, 5)} - {flight.arrival_time.slice(0, 5)}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">{flight.airline} • {flight.duration} • {flight.stops === 0 ? "Direct" : `${flight.stops} Stop`}</p>
+                        </div>
+                      </div>
+                      <div className="text-right flex items-center gap-4">
+                        <div>
+                          <p className="font-bold text-slate-800 dark:text-slate-100">{currency === "GBP" ? "£" : currency === "EUR" ? "€" : currency === "AED" ? "د.إ" : "$"}{flight.price_home}</p>
+                        </div>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); setResult({ ...result, selected_flight: flight }); setShowCheckout(true); }}
+                          className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+                        >
+                          Select
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {/* Hotel Card */}
               <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 mt-10 mb-4">AI Recommended Stay</h3>

@@ -25,8 +25,46 @@ export const fallbackAgentState = {
       baggage: "1x23kg, 1x7kg",
       is_refundable: true,
       carbon_emission_kg: 210,
-      logo_url: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=100&auto=format&fit=crop",
-      confirmation_number: null
+      logo_url: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Emirates_logo.svg",
+      confirmation_number: "EK-X7890B"
+    },
+    {
+      flight_number: "BA-104",
+      airline: "British Airways",
+      origin: "DXB",
+      destination: "LHR",
+      departure_time: "10:30 AM",
+      arrival_time: "03:15 PM",
+      duration: "7h 45m",
+      price_native: 2650,
+      currency_native: "AED",
+      price_home: 720,
+      stops: 0,
+      cabin_class: "economy",
+      baggage: "1x23kg, 1x7kg",
+      is_refundable: false,
+      carbon_emission_kg: 235,
+      logo_url: "https://upload.wikimedia.org/wikipedia/en/4/42/British_Airways_Logo.svg",
+      confirmation_number: "BA-Y1234C"
+    },
+    {
+      flight_number: "QR-1020",
+      airline: "Qatar Airways",
+      origin: "DXB",
+      destination: "LHR",
+      departure_time: "06:00 AM",
+      arrival_time: "01:45 PM",
+      duration: "10h 45m",
+      price_native: 2100,
+      currency_native: "AED",
+      price_home: 570,
+      stops: 1,
+      cabin_class: "economy",
+      baggage: "1x30kg, 1x7kg",
+      is_refundable: true,
+      carbon_emission_kg: 310,
+      logo_url: "https://upload.wikimedia.org/wikipedia/en/9/9b/Qatar_Airways_Logo.svg",
+      confirmation_number: "QR-Z5678D"
     }
   ],
   selected_flight: {
@@ -45,7 +83,7 @@ export const fallbackAgentState = {
       baggage: "1x23kg, 1x7kg",
       is_refundable: true,
       carbon_emission_kg: 210,
-      logo_url: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=100&auto=format&fit=crop",
+      logo_url: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Emirates_logo.svg",
       confirmation_number: "EK-X7890B"
   },
   hotel_options: [
