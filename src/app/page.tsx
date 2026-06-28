@@ -4,6 +4,23 @@ import { useState, useEffect } from "react";
 import { PlaneTakeoff, Hotel, CalendarDays, Coins, BrainCircuit, Loader2, ArrowRight, MapPin, CheckCircle2, ShieldAlert, Sparkles, Leaf, Briefcase, Filter, Search, ChevronDown, ChevronUp, CircleDollarSign, Moon, Sun, CheckCircle, Trophy, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const getAirlineLogo = (airline: string | undefined, fallbackUrl: string | undefined) => {
+  if (!airline) return fallbackUrl || "";
+  const normalized = airline.toLowerCase().replace(/\s+/g, '');
+  if (normalized.includes('emirates')) return 'https://logo.clearbit.com/emirates.com';
+  if (normalized.includes('airindia')) return 'https://logo.clearbit.com/airindia.com';
+  if (normalized.includes('vistara')) return 'https://logo.clearbit.com/airvistara.com';
+  if (normalized.includes('gulfair')) return 'https://logo.clearbit.com/gulfair.com';
+  if (normalized.includes('flydubai')) return 'https://logo.clearbit.com/flydubai.com';
+  if (normalized.includes('qatar')) return 'https://logo.clearbit.com/qatarairways.com';
+  if (normalized.includes('british')) return 'https://logo.clearbit.com/britishairways.com';
+  if (normalized.includes('etihad')) return 'https://logo.clearbit.com/etihad.com';
+  if (normalized.includes('indigo')) return 'https://logo.clearbit.com/goindigo.in';
+  
+  // If no match, try using the URL provided by the AI, or generate a fallback initial
+  return fallbackUrl || `https://ui-avatars.com/api/?name=${airline}&background=random`;
+};
+
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [agentStep, setAgentStep] = useState(0); 
@@ -357,7 +374,7 @@ export default function Home() {
                 <div className="p-6 flex flex-col md:flex-row md:items-center gap-6">
                   {/* Airline Logo */}
                   <div className="w-16 shrink-0">
-                    <img src={result.selected_flight?.logo_url} alt={result.selected_flight?.airline} className="w-full object-contain max-h-12 dark:invert" />
+                    <img src={getAirlineLogo(result.selected_flight?.airline, result.selected_flight?.logo_url)} alt={result.selected_flight?.airline} className="w-full object-contain max-h-12 bg-white rounded-md p-1" />
                   </div>
                   
                   {/* Flight Times & Timeline */}
@@ -441,7 +458,7 @@ export default function Home() {
                   {result.flight_options.filter((f: any) => f.flight_number !== result.selected_flight?.flight_number).map((flight: any, idx: number) => (
                     <div key={idx} className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between hover:border-blue-300 dark:hover:border-blue-500 transition-colors">
                       <div className="flex items-center gap-4">
-                        <img src={flight.logo_url} alt={flight.airline} className="w-10 h-10 object-contain dark:invert bg-white dark:bg-transparent rounded-md p-1" />
+                        <img src={getAirlineLogo(flight.airline, flight.logo_url)} alt={flight.airline} className="w-10 h-10 object-contain bg-white rounded-md p-1" />
                         <div>
                           <p className="font-bold text-slate-800 dark:text-slate-100">{flight.departure_time.slice(0, 5)} - {flight.arrival_time.slice(0, 5)}</p>
                           <p className="text-xs text-slate-500 dark:text-slate-400">{flight.airline} • {flight.duration} • {flight.stops === 0 ? "Direct" : `${flight.stops} Stop`}</p>
